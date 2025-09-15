@@ -1,8 +1,16 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "module": "commonjs",
     "checkJs": true,
-    "typeRoots": ["./.types"]
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "paths": {
+      "*": ["*", "../node_modules/*"]
+    },
+    "types": ["chrome"]
   },
-  "include": ["./**/*"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
