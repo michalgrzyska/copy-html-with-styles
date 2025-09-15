@@ -4,9 +4,20 @@
   "license": "ISC",
   "description": "A utility for copying HTML with styles",
   "scripts": {
-    "start": "node dist/index.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/chrome": "^0.1.11"
+    "@types/chrome": "^0.1.12",
+    "@types/node": "^24.5.2",
+    "terser": "^5.44.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "vite-plugin-static-copy": "^3.1.2"
+  },
+  "dependencies": {
+    "xmlbuilder2": "^3.1.1"
   }
 }
