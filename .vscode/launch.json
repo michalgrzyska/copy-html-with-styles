@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Chrome Extension",
+      "type": "chrome",
+      "request": "launch",
+      "url": "https://utwrudaslaska.pl", 
+      "webRoot": "${workspaceFolder}",
+      "runtimeArgs": [
+        "--disable-extensions-except=${workspaceFolder}",
+        "--load-extension=${workspaceFolder}"
+      ]
+    }
+  ]
+}
