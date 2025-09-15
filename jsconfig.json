@@ -9,7 +9,8 @@
     "paths": {
       "*": ["*", "../node_modules/*"]
     },
-    "types": ["chrome"]
+    "types": ["chrome"],
+    "strict": false
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

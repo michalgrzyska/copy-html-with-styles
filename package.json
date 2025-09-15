@@ -1,0 +1,12 @@
+{
+  "name": "copy-html-with-styles",
+  "version": "1.0.0",
+  "license": "ISC",
+  "description": "A utility for copying HTML with styles",
+  "scripts": {
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.1.11"
+  }
+}
