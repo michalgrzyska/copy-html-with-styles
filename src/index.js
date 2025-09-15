@@ -1,8 +1,8 @@
-/* global $0 */ // Tell VS Code/TS that $0 is defined in runtime
-
 chrome.devtools.panels.elements.createSidebarPane(
-  "Element HTML",
+  "Copy HTML with CSS",
   function (sidebar) {
+    sidebar.setPage("src/sidebar/sidebar.html");
+    return;
     /** @param {Element|null} element */
     function extractOuterHTML(element) {
       if (!element) {
@@ -17,12 +17,10 @@ chrome.devtools.panels.elements.createSidebarPane(
       sidebar.setExpression(expression);
     }
 
-    // Update whenever a new element is selected
     chrome.devtools.panels.elements.onSelectionChanged.addListener(
       updateElementHTML
     );
 
-    // Initial update
     updateElementHTML();
   }
 );

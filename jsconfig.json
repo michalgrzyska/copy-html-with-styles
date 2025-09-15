@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "typeRoots": ["./types"]
+    "typeRoots": ["./.types"]
   },
   "include": ["./**/*"]
 }
