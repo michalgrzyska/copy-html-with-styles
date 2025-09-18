@@ -3,9 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <title>Copy HTML with CSS</title>
   </head>
   <body>
+    <div class="top-nav">
+      <div class="options">
+        <label>
+          <input type="checkbox" name="colorStyles" />
+          Include
+          <pre>color</pre>
+          styles
+        </label>
+        <label>
+          <input type="checkbox" name="classSelectors" />
+          Include
+          <pre>class</pre>
+          selectors
+        </label>
+        <label>
+          <input type="checkbox" name="idSelectors" />
+          Include
+          <pre>id</pre>
+          selectors
+        </label>
+      </div>
+      <div class="buttons">
+        <button type="button">Copy to clipboard</button>
+      </div>
+    </div>
     <div id="output"></div>
     <script type="module" src="sidebar.js"></script>
   </body>

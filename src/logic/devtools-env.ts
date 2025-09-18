@@ -1,7 +1,7 @@
 import { SerializedNode } from "./serialized-node.js";
 
 export class DevtoolsEnv {
-  static getCurrentNode(): Promise<SerializedNode | undefined> {
+  static getCurrentNode(): Promise<SerializedNode> {
     return new Promise((resolve) => {
       const fn = function serializeFn(x: any) {
         return new SerializedNode(x);
@@ -17,7 +17,7 @@ export class DevtoolsEnv {
       chrome.devtools.inspectedWindow.eval(expression, (result: SerializedNode, exception) => {
         if (exception) {
           console.error("Eval exception:", exception);
-          resolve(undefined);
+          resolve(undefined!);
         } else {
           resolve(result);
         }

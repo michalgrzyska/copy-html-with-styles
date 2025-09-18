@@ -1,17 +1,20 @@
-// @preserve
 export class SerializedNode {
   type!: number;
   tag!: string;
-  attributes!: { name: string; value: any }[];
+  attributes!: Record<string, any>;
   inlineStyle!: string;
-  styles!: { [key: string]: string };
+  styles!: Record<string, string>;
   children!: SerializedNode[];
   text!: string;
   comment!: string;
   value!: any;
   name!: string;
 
-  constructor(node: Element | ChildNode) {
+  isChild: boolean;
+
+  constructor(node: Element | ChildNode, isChild = false) {
+    this.isChild = isChild;
+
     if (!node) {
       return;
     }
@@ -36,18 +39,24 @@ export class SerializedNode {
   }
 
   private initAsElementNode(node: HTMLElement): void {
-    const styles = this.getUniqueStylesForTag(node);
-
     this.type = node.nodeType;
     this.tag = node.tagName.toLowerCase();
     this.inlineStyle = node.getAttribute("style") || "";
-    this.styles = styles;
-    this.children = Array.from(node.childNodes).map((x) => new SerializedNode(x));
+    this.children = Array.from(node.childNodes).map((x) => new SerializedNode(x, true));
 
-    this.attributes = Array.from(node.attributes).map((attr) => ({
-      name: attr.name,
-      value: attr.value,
-    }));
+    this.attributes = Array.from(node.attributes).reduce(
+      (acc, curr) => {
+        acc[curr.name] = curr.value;
+        return acc;
+      },
+      {} as Record<string, any>,
+    );
+
+    const style = window.getComputedStyle(node);
+
+    this.styles = Object.fromEntries(
+      Array.from(style).map((prop) => [prop, style.getPropertyValue(prop)]),
+    );
   }
 
   private initAsTextNode(node: Element | ChildNode): void {
@@ -65,40 +74,5 @@ export class SerializedNode {
     this.name = node.nodeName;
     this.value = node.nodeValue;
     this.children = Array.from(node.childNodes || []).map((x) => new SerializedNode(x));
-  }
-
-  private getUniqueStylesForTag(node: HTMLElement): { [key: string]: string } {
-    const iframe = this.getFakeIFrame();
-
-    const defaultEl = document.createElement(node.tagName);
-    iframe.contentDocument!.body.appendChild(defaultEl);
-    const defaultStyles = iframe.contentWindow!.getComputedStyle(defaultEl);
-
-    const divStyles = window.getComputedStyle(node);
-
-    const diff: { [key: string]: string } = {};
-
-    for (let prop of Array.from(divStyles)) {
-      if (divStyles.getPropertyValue(prop) !== defaultStyles.getPropertyValue(prop)) {
-        diff[prop] = divStyles.getPropertyValue(prop);
-      }
-    }
-
-    for (let prop of Array.from(node.style)) {
-      diff[prop] = node.style.getPropertyValue(prop);
-    }
-
-    defaultEl.remove();
-    iframe.remove();
-
-    return diff;
-  }
-
-  private getFakeIFrame(): HTMLIFrameElement {
-    const iframe = document.createElement("iframe");
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
-    return iframe;
   }
 }

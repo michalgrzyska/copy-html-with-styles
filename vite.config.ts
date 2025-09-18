@@ -30,6 +30,10 @@ export default defineConfig({
           dest: ".",
         },
         {
+          src: "src/**/*.css",
+          dest: ".",
+        },
+        {
           src: "src/manifest.json",
           dest: ".",
         },
