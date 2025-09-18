@@ -1,7 +1,7 @@
 import { DevtoolsEnv } from "../logic/devtools-env.js";
 import { HtmlSerializer } from "../logic/html-serializer.js";
 
-async function updateElementHTML() {
+async function updateElementHTML(): Promise<void> {
   const node = await DevtoolsEnv.getCurrentNode();
   const serializer = new HtmlSerializer(node!);
   const html = serializer.toHtmlString();

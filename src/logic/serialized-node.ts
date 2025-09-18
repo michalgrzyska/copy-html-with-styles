@@ -35,7 +35,7 @@ export class SerializedNode {
     }
   }
 
-  private initAsElementNode(node: HTMLElement) {
+  private initAsElementNode(node: HTMLElement): void {
     const styles = this.getUniqueStylesForTag(node);
 
     this.type = node.nodeType;
@@ -50,24 +50,24 @@ export class SerializedNode {
     }));
   }
 
-  private initAsTextNode(node: Element | ChildNode) {
+  private initAsTextNode(node: Element | ChildNode): void {
     this.type = node.nodeType;
     this.text = node.nodeValue!;
   }
 
-  private initAsCommentNode(node: Element | ChildNode) {
+  private initAsCommentNode(node: Element | ChildNode): void {
     this.type = node.nodeType;
     this.comment = node.nodeValue!;
   }
 
-  private initAsDefaultNode(node: Element | ChildNode) {
+  private initAsDefaultNode(node: Element | ChildNode): void {
     this.type = node.nodeType;
     this.name = node.nodeName;
     this.value = node.nodeValue;
     this.children = Array.from(node.childNodes || []).map((x) => new SerializedNode(x));
   }
 
-  private getUniqueStylesForTag(node: HTMLElement) {
+  private getUniqueStylesForTag(node: HTMLElement): { [key: string]: string } {
     const iframe = this.getFakeIFrame();
 
     const defaultEl = document.createElement(node.tagName);
@@ -94,7 +94,7 @@ export class SerializedNode {
     return diff;
   }
 
-  private getFakeIFrame() {
+  private getFakeIFrame(): HTMLIFrameElement {
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     document.body.appendChild(iframe);
