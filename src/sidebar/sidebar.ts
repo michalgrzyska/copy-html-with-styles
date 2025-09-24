@@ -5,38 +5,45 @@ import { DevtoolsEnv } from "../logic/devtools-env.js";
 import { HtmlSerializer } from "../logic/html-serializer.js";
 import { OptimizedNode } from "../logic/optimized-node.js";
 
-const link = document.createElement("link");
-link.rel = "stylesheet";
-link.href = cssHref;
-document.head.appendChild(link);
+class Sidebar {
+  private readonly serializer = new HtmlSerializer();
 
-hljs.registerLanguage("xml", xml);
+  constructor() {
+    this.registerHighlightJs();
+    this.addSelectionListener();
+    this.updateElementHtml();
+  }
 
-const serializer = new HtmlSerializer();
+  private registerHighlightJs(): void {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = cssHref;
+    document.head.appendChild(link);
 
-async function updateElementHTML(): Promise<void> {
-  const serializedNode = await DevtoolsEnv.getCurrentNode();
-  const optimizedNode = new OptimizedNode(serializedNode);
-  const html = await serializer.serialize(optimizedNode);
+    hljs.registerLanguage("xml", xml);
+  }
 
-  document.getElementById("output")!.innerHTML = `<pre><code class="language-xml">${escapeHtml(
-    html,
-  )}</code></pre>`;
+  private async updateElementHtml(): Promise<void> {
+    const serializedNode = await DevtoolsEnv.getCurrentNode();
+    const optimizedNode = new OptimizedNode(serializedNode);
+    const html = await this.serializer.serialize(optimizedNode);
 
-  const codeEl = document.querySelector("#output code") as HTMLElement;
-  hljs.highlightElement(codeEl);
+    const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(html)}</code></pre>`;
+    document.getElementById("output")!.innerHTML = innerHtml;
+
+    const codeEl = document.querySelector("#output code") as HTMLElement;
+    hljs.highlightElement(codeEl);
+  }
+
+  private addSelectionListener(): void {
+    chrome.devtools.panels.elements.onSelectionChanged.addListener(async () => {
+      await this.updateElementHtml();
+    });
+  }
+
+  private escapeHtml(str: string): string {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
 }
 
-chrome.devtools.panels.elements.onSelectionChanged.addListener(async () => {
-  await updateElementHTML();
-});
-
-updateElementHTML();
-
-function escapeHtml(str: string): string {
-  return str
-    .replace('<?xml version="1.0"?>\n', "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+new Sidebar();
