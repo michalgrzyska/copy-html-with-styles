@@ -1,4 +1,5 @@
 import { DefaultStylesCache } from "./default-styles-cache.js";
+import { OptionsForm } from "./options-form.js";
 import { SerializedNode } from "./serialized-node.js";
 import { Utils } from "./utils.js";
 
@@ -13,16 +14,27 @@ export class OptimizedNode {
   value!: any;
   name!: string;
 
-  constructor(serializedNode: SerializedNode, isParent = true) {
+  constructor(
+    serializedNode: SerializedNode,
+    private readonly optionsForm: OptionsForm,
+    isParent = true,
+  ) {
     if (isParent) {
       DefaultStylesCache.instance.startGathering();
     }
 
     this.type = serializedNode.type;
     this.tag = serializedNode.tag;
+
     this.attributes = serializedNode.attributes;
+    delete this.attributes["style"];
+
     this.styles = this.getOptimizedStyles(serializedNode);
-    this.children = serializedNode.children?.map((x) => new OptimizedNode(x, false));
+
+    this.children = serializedNode.children?.map(
+      (x) => new OptimizedNode(x, this.optionsForm, false),
+    );
+
     this.text = serializedNode.text;
     this.comment = serializedNode.comment;
     this.value = serializedNode.value;
@@ -40,7 +52,8 @@ export class OptimizedNode {
     const parsedStyle = Object.keys(style).length > 0 ? this.parseStyle(node) : {};
     const parsedInlineStyle = !!inlineStyle ? this.parseInlineStyle(inlineStyle) : {};
 
-    return { ...parsedStyle, ...parsedInlineStyle };
+    const result: Record<string, string> = { ...parsedStyle, ...parsedInlineStyle };
+    return this.optionsForm.includeColor ? result : this.filterColorProps(result);
   }
 
   private parseStyle(node: SerializedNode): Record<string, string> {
@@ -60,5 +73,17 @@ export class OptimizedNode {
         if (property && value) acc[property] = value;
         return acc;
       }, {});
+  }
+
+  private filterColorProps(result: Record<string, string>): Record<string, string> {
+    Object.keys(result).forEach((key) => {
+      const value = result[key];
+
+      if (value.startsWith("rgb")) {
+        delete result[key];
+      }
+    });
+
+    return result;
   }
 }

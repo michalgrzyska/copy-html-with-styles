@@ -4,9 +4,11 @@ import cssHref from "highlight.js/styles/vs2015.min.css?url";
 import { DevtoolsEnv } from "../logic/devtools-env.js";
 import { HtmlSerializer } from "../logic/html-serializer.js";
 import { OptimizedNode } from "../logic/optimized-node.js";
+import { OptionsForm } from "../logic/options-form.js";
 
-class Sidebar {
+export class Sidebar {
   private readonly serializer = new HtmlSerializer();
+  private readonly optionsForm = new OptionsForm(this);
 
   constructor() {
     this.registerHighlightJs();
@@ -23,9 +25,9 @@ class Sidebar {
     hljs.registerLanguage("xml", xml);
   }
 
-  private async updateElementHtml(): Promise<void> {
+  async updateElementHtml(): Promise<void> {
     const serializedNode = await DevtoolsEnv.getCurrentNode();
-    const optimizedNode = new OptimizedNode(serializedNode);
+    const optimizedNode = new OptimizedNode(serializedNode, this.optionsForm);
     const html = await this.serializer.serialize(optimizedNode);
 
     const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(html)}</code></pre>`;
