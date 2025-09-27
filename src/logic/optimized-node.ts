@@ -3,6 +3,17 @@ import { OptionsForm } from "./options-form.js";
 import { SerializedNode } from "./serialized-node.js";
 import { Utils } from "./utils.js";
 
+const DEVTOOLS_STYLES = [
+  "block-size",
+  "inline-size",
+  "min-block-size",
+  "min-inline-size",
+  "max-block-size",
+  "max-inline-size",
+  "-webkit-locale",
+  "transform-origin",
+];
+
 export class OptimizedNode {
   type!: number;
   tag!: string;
@@ -25,27 +36,23 @@ export class OptimizedNode {
 
     this.type = serializedNode.type;
     this.tag = serializedNode.tag;
-
-    this.attributes = serializedNode.attributes;
-    delete this.attributes["style"];
-
     this.styles = this.getOptimizedStyles(serializedNode);
-
-    this.children = serializedNode.children?.map(
-      (x) => new OptimizedNode(x, this.optionsForm, false),
-    );
-
     this.text = serializedNode.text;
     this.comment = serializedNode.comment;
     this.value = serializedNode.value;
     this.name = serializedNode.name;
+    this.attributes = this.getAttributesFiltered(serializedNode.attributes);
+
+    this.children = serializedNode.children?.map(
+      (x) => new OptimizedNode(x, this.optionsForm, false),
+    );
 
     if (isParent) {
       DefaultStylesCache.instance.stopGathering();
     }
   }
 
-  getOptimizedStyles(node: SerializedNode): Record<string, string> {
+  private getOptimizedStyles(node: SerializedNode): Record<string, string> {
     const style = node.styles ?? {};
     const inlineStyle = node.inlineStyle;
 
@@ -53,6 +60,11 @@ export class OptimizedNode {
     const parsedInlineStyle = !!inlineStyle ? this.parseInlineStyle(inlineStyle) : {};
 
     const result: Record<string, string> = { ...parsedStyle, ...parsedInlineStyle };
+
+    DEVTOOLS_STYLES.forEach((s) => {
+      delete result[s];
+    });
+
     return this.optionsForm.includeColor ? result : this.filterColorProps(result);
   }
 
@@ -85,5 +97,23 @@ export class OptimizedNode {
     });
 
     return result;
+  }
+
+  private getAttributesFiltered(attributes?: Record<string, any>): Record<string, any> {
+    if (!attributes) {
+      return {};
+    }
+
+    delete attributes["style"];
+
+    if (!this.optionsForm.includeClass && attributes["class"]) {
+      delete attributes["class"];
+    }
+
+    if (!this.optionsForm.includeId && attributes["id"]) {
+      delete attributes["id"];
+    }
+
+    return attributes;
   }
 }
