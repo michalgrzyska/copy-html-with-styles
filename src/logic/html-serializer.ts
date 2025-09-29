@@ -93,6 +93,6 @@ export class HtmlSerializer {
       printWidth: 120,
     });
 
-    return formatted.replace(/&quot;/g, "'");
+    return formatted.replace(/&quot;/g, "'").replace(/&#39;/g, "'");
   }
 }
