@@ -1,3 +1,4 @@
+import { CssMerger } from "./css-merge/css-merger.js";
 import { DefaultStylesCache } from "./default-styles-cache.js";
 import { OptionsForm } from "./options-form.js";
 import { SerializedNode } from "./serialized-node.js";
@@ -13,6 +14,8 @@ const DEVTOOLS_STYLES = [
   "-webkit-locale",
   "transform-origin",
 ];
+
+const CSS_MERGER = new CssMerger();
 
 export class OptimizedNode {
   type!: number;
@@ -59,11 +62,13 @@ export class OptimizedNode {
     const parsedStyle = Object.keys(style).length > 0 ? this.parseStyle(node) : {};
     const parsedInlineStyle = !!inlineStyle ? this.parseInlineStyle(inlineStyle) : {};
 
-    const result: Record<string, string> = { ...parsedStyle, ...parsedInlineStyle };
+    let result: Record<string, string> = { ...parsedStyle, ...parsedInlineStyle };
 
     DEVTOOLS_STYLES.forEach((s) => {
       delete result[s];
     });
+
+    //result = CSS_MERGER.merge(result);
 
     return this.optionsForm.includeColor ? result : this.filterColorProps(result);
   }
