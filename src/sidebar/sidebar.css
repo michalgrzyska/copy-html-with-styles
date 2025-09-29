@@ -51,24 +51,30 @@ html {
         font-size: 13px;
         padding: 4px 10px;
         cursor: pointer;
-        transition: background-color 0.2s, border-color 0.2s;
-      }
+        transition:
+          background-color 0.2s,
+          border-color 0.2s;
 
-      button:hover {
-        background-color: #3c3c3c;
-        border-color: #8ab4f8;
-      }
+        &#copyToClipboard {
+          width: 125px;
+        }
 
-      button:active {
-        background-color: #2a2a2a;
-        border-color: #8ab4f8;
-      }
+        &:hover {
+          background-color: #3c3c3c;
+          border-color: #8ab4f8;
+        }
 
-      button:disabled {
-        background-color: #2b2b2b;
-        color: #9aa0a6;
-        border-color: #3c4043;
-        cursor: not-allowed;
+        &:active {
+          background-color: #2a2a2a;
+          border-color: #8ab4f8;
+        }
+
+        &:disabled {
+          background-color: #2b2b2b;
+          color: #9aa0a6;
+          border-color: #3c4043;
+          cursor: not-allowed;
+        }
       }
     }
 

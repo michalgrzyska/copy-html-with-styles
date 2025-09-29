@@ -10,10 +10,26 @@ export class Sidebar {
   private readonly serializer = new HtmlSerializer();
   private readonly optionsForm = new OptionsForm(this);
 
+  private html: string = "";
+
   constructor() {
     this.registerHighlightJs();
     this.addSelectionListener();
     this.updateElementHtml();
+    this.listenToCopyToClipboardButton();
+  }
+
+  async updateElementHtml(): Promise<void> {
+    const serializedNode = await DevtoolsEnv.getCurrentNode();
+    const optimizedNode = new OptimizedNode(serializedNode, this.optionsForm);
+
+    this.html = await this.serializer.serialize(optimizedNode);
+
+    const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(this.html)}</code></pre>`;
+    document.getElementById("output")!.innerHTML = innerHtml;
+
+    const codeEl = document.querySelector("#output code") as HTMLElement;
+    hljs.highlightElement(codeEl);
   }
 
   private registerHighlightJs(): void {
@@ -25,16 +41,17 @@ export class Sidebar {
     hljs.registerLanguage("xml", xml);
   }
 
-  async updateElementHtml(): Promise<void> {
-    const serializedNode = await DevtoolsEnv.getCurrentNode();
-    const optimizedNode = new OptimizedNode(serializedNode, this.optionsForm);
-    const html = await this.serializer.serialize(optimizedNode);
+  private listenToCopyToClipboardButton(): void {
+    const button = document.getElementById("copyToClipboard")! as HTMLButtonElement;
 
-    const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(html)}</code></pre>`;
-    document.getElementById("output")!.innerHTML = innerHtml;
+    button.addEventListener("click", () => {
+      this.executeCopy();
+      button.textContent = "Copied!";
 
-    const codeEl = document.querySelector("#output code") as HTMLElement;
-    hljs.highlightElement(codeEl);
+      setTimeout(() => {
+        button.textContent = "Copy to clipboard";
+      }, 2000);
+    });
   }
 
   private addSelectionListener(): void {
@@ -45,6 +62,18 @@ export class Sidebar {
 
   private escapeHtml(str: string): string {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  private executeCopy(): void {
+    const textarea = document.createElement("textarea");
+    textarea.value = this.html;
+
+    document.body.appendChild(textarea);
+
+    textarea.select();
+
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
   }
 }
 
