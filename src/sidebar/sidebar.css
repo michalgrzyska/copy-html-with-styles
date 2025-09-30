@@ -1,118 +1,122 @@
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html {
-  height: 100%;
-  background-color: #282828;
-
-  & body {
-    padding: 8px;
-    color: #e3e3e3;
-    font-size: 12px;
-    overflow: auto;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    background-color: #282828;
 
-    div.top-nav {
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-
-      .options {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-
-        label {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-
-          pre {
-            display: inline;
-            background-color: #3c3c3c;
-            padding: 2px 5px;
-            border-radius: 2px;
-          }
-        }
-      }
-
-      button {
-        background-color: #323232;
-        color: #e8eaed;
-        border: 1px solid #5f6368;
-        border-radius: 2px;
-        font-family: system-ui, sans-serif;
-        font-size: 13px;
-        padding: 4px 10px;
-        cursor: pointer;
-        transition:
-          background-color 0.2s,
-          border-color 0.2s;
-
-        &#copyToClipboard {
-          width: 125px;
-        }
-
-        &:hover {
-          background-color: #3c3c3c;
-          border-color: #8ab4f8;
-        }
-
-        &:active {
-          background-color: #2a2a2a;
-          border-color: #8ab4f8;
-        }
-
-        &:disabled {
-          background-color: #2b2b2b;
-          color: #9aa0a6;
-          border-color: #3c4043;
-          cursor: not-allowed;
-        }
-      }
-    }
-
-    #output {
-      overflow: auto;
-      height: 100%;
-
-      pre {
+    & body {
+        padding: 8px;
+        color: #e3e3e3;
+        font-size: 12px;
         overflow: auto;
         height: 100%;
-        code {
-          height: 100%;
-          overflow: auto;
+        display: flex;
+        flex-direction: column;
+
+        div.top-nav {
+            margin-bottom: 8px;
+
+            .options {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 8px;
+
+                label {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+
+                    pre {
+                        display: inline;
+                        background-color: #3c3c3c;
+                        padding: 2px 5px;
+                        border-radius: 2px;
+                    }
+                }
+            }
+
+            .buttons {
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+
+                button {
+                    background-color: #323232;
+                    color: #e8eaed;
+                    border: 1px solid #5f6368;
+                    border-radius: 2px;
+                    font-family: system-ui, sans-serif;
+                    font-size: 13px;
+                    padding: 4px 10px;
+                    cursor: pointer;
+                    transition:
+                        background-color 0.2s,
+                        border-color 0.2s;
+
+                    &#copyToClipboard {
+                        width: 125px;
+                    }
+
+                    &:hover {
+                        background-color: #3c3c3c;
+                        border-color: #8ab4f8;
+                    }
+
+                    &:active {
+                        background-color: #2a2a2a;
+                        border-color: #8ab4f8;
+                    }
+
+                    &:disabled {
+                        background-color: #2b2b2b;
+                        color: #9aa0a6;
+                        border-color: #3c4043;
+                        cursor: not-allowed;
+                    }
+                }
+            }
         }
-      }
+
+        #output {
+            overflow: auto;
+            height: 100%;
+
+            pre {
+                overflow: auto;
+                height: 100%;
+                code {
+                    height: 100%;
+                    overflow: auto;
+                }
+            }
+        }
     }
-  }
 }
 
 ::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+    width: 12px;
+    height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1e1e1e;
+    background: #1e1e1e;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #555;
-  border-radius: 10px;
-  border: 3px solid #1e1e1e;
+    background-color: #555;
+    border-radius: 10px;
+    border: 3px solid #1e1e1e;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #777;
+    background-color: #777;
 }
 
 ::-webkit-scrollbar-corner {
-  background: #1e1e1e;
+    background: #1e1e1e;
 }

@@ -1,38 +1,46 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="sidebar.css" />
-    <title>Copy HTML with CSS</title>
-  </head>
-  <body>
-    <div class="top-nav">
-      <div class="options">
-        <label>
-          <input type="checkbox" id="includeColorStyles" />
-          Include
-          <pre>color</pre>
-          styles
-        </label>
-        <label>
-          <input type="checkbox" id="includeClasses" />
-          Include
-          <pre>class</pre>
-          selectors
-        </label>
-        <label>
-          <input type="checkbox" id="includeIds" />
-          Include
-          <pre>id</pre>
-          selectors
-        </label>
-      </div>
-      <div class="buttons">
-        <button type="button" id="copyToClipboard">Copy to clipboard</button>
-      </div>
-    </div>
-    <div id="output"></div>
-    <script type="module" src="sidebar.js"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="sidebar.css" />
+        <title>Copy HTML with CSS</title>
+    </head>
+    <body>
+        <div class="top-nav">
+            <div class="options">
+                <label>
+                    <input type="checkbox" id="includeColorStyles" />
+                    Include
+                    <pre>color</pre>
+                    styles
+                </label>
+                <label>
+                    <input type="checkbox" id="includeClasses" />
+                    Include
+                    <pre>class</pre>
+                    selectors
+                </label>
+                <label>
+                    <input type="checkbox" id="includeIds" />
+                    Include
+                    <pre>id</pre>
+                    selectors
+                </label>
+                <label>
+                    <input type="checkbox" id="includeComments" />
+                    Include comments
+                </label>
+                <label>
+                    <input type="checkbox" id="includeOthers" />
+                    Include other attributes
+                </label>
+            </div>
+            <div class="buttons">
+                <button type="button" id="copyToClipboard">Copy to clipboard</button>
+            </div>
+        </div>
+        <div id="output"></div>
+        <script type="module" src="sidebar.js"></script>
+    </body>
 </html>
