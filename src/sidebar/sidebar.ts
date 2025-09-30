@@ -1,80 +1,81 @@
 import hljs from "highlight.js/lib/core";
 import xml from "highlight.js/lib/languages/xml";
-import cssHref from "highlight.js/styles/vs2015.min.css?url";
+// import cssHref from "highlight.js/styles/vs2015.min.css?url";
 import { DevtoolsEnv } from "../logic/devtools-env.js";
 import { HtmlSerializer } from "../logic/html-serializer.js";
 import { OptimizedNode } from "../logic/optimized-node.js";
 import { OptionsForm } from "../logic/options-form.js";
+import cssHref from "./theme.css?url";
 
 export class Sidebar {
-  private readonly serializer = new HtmlSerializer();
-  private readonly optionsForm = new OptionsForm(this);
+    private readonly serializer = new HtmlSerializer();
+    private readonly optionsForm = new OptionsForm(this);
 
-  private html: string = "";
+    private html: string = "";
 
-  constructor() {
-    this.registerHighlightJs();
-    this.addSelectionListener();
-    this.updateElementHtml();
-    this.listenToCopyToClipboardButton();
-  }
+    constructor() {
+        this.registerHighlightJs();
+        this.addSelectionListener();
+        this.updateElementHtml();
+        this.listenToCopyToClipboardButton();
+    }
 
-  async updateElementHtml(): Promise<void> {
-    const serializedNode = await DevtoolsEnv.getCurrentNode();
-    const optimizedNode = new OptimizedNode(serializedNode, this.optionsForm);
+    async updateElementHtml(): Promise<void> {
+        const serializedNode = await DevtoolsEnv.getCurrentNode();
+        const optimizedNode = new OptimizedNode(serializedNode, this.optionsForm);
 
-    this.html = await this.serializer.serialize(optimizedNode);
+        this.html = await this.serializer.serialize(optimizedNode);
 
-    const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(this.html)}</code></pre>`;
-    document.getElementById("output")!.innerHTML = innerHtml;
+        const innerHtml = `<pre><code class="language-xml">${this.escapeHtml(this.html)}</code></pre>`;
+        document.getElementById("output")!.innerHTML = innerHtml;
 
-    const codeEl = document.querySelector("#output code") as HTMLElement;
-    hljs.highlightElement(codeEl);
-  }
+        const codeEl = document.querySelector("#output code") as HTMLElement;
+        hljs.highlightElement(codeEl);
+    }
 
-  private registerHighlightJs(): void {
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = cssHref;
-    document.head.appendChild(link);
+    private registerHighlightJs(): void {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = cssHref;
+        document.head.appendChild(link);
 
-    hljs.registerLanguage("xml", xml);
-  }
+        hljs.registerLanguage("xml", xml);
+    }
 
-  private listenToCopyToClipboardButton(): void {
-    const button = document.getElementById("copyToClipboard")! as HTMLButtonElement;
+    private listenToCopyToClipboardButton(): void {
+        const button = document.getElementById("copyToClipboard")! as HTMLButtonElement;
 
-    button.addEventListener("click", () => {
-      this.executeCopy();
-      button.textContent = "Copied!";
+        button.addEventListener("click", () => {
+            this.executeCopy();
+            button.textContent = "Copied!";
 
-      setTimeout(() => {
-        button.textContent = "Copy to clipboard";
-      }, 2000);
-    });
-  }
+            setTimeout(() => {
+                button.textContent = "Copy to clipboard";
+            }, 2000);
+        });
+    }
 
-  private addSelectionListener(): void {
-    chrome.devtools.panels.elements.onSelectionChanged.addListener(async () => {
-      await this.updateElementHtml();
-    });
-  }
+    private addSelectionListener(): void {
+        chrome.devtools.panels.elements.onSelectionChanged.addListener(async () => {
+            await this.updateElementHtml();
+        });
+    }
 
-  private escapeHtml(str: string): string {
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
+    private escapeHtml(str: string): string {
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
 
-  private executeCopy(): void {
-    const textarea = document.createElement("textarea");
-    textarea.value = this.html;
+    private executeCopy(): void {
+        const textarea = document.createElement("textarea");
+        textarea.value = this.html;
 
-    document.body.appendChild(textarea);
+        document.body.appendChild(textarea);
 
-    textarea.select();
+        textarea.select();
 
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-  }
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+    }
 }
 
 new Sidebar();

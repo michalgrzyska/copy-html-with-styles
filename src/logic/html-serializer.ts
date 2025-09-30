@@ -6,93 +6,95 @@ import { DefaultStylesCache } from "./default-styles-cache.js";
 import { OptimizedNode } from "./optimized-node.js";
 
 export class HtmlSerializer {
-  private readonly voidTags = new Set([
-    "area",
-    "base",
-    "br",
-    "col",
-    "embed",
-    "hr",
-    "img",
-    "input",
-    "link",
-    "meta",
-    "param",
-    "source",
-    "track",
-    "wbr",
-  ]);
+    private readonly voidTags = new Set([
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr",
+    ]);
 
-  async serialize(node: OptimizedNode): Promise<string> {
-    DefaultStylesCache.instance.startGathering();
+    async serialize(node: OptimizedNode): Promise<string> {
+        DefaultStylesCache.instance.startGathering();
 
-    const raw = this.serializeNode(node);
+        const raw = this.serializeNode(node);
 
-    DefaultStylesCache.instance.stopGathering();
+        DefaultStylesCache.instance.stopGathering();
 
-    return await this.format(raw);
-  }
-
-  private serializeNode(node: OptimizedNode): string {
-    if (!node) {
-      return "";
+        return await this.format(raw);
     }
 
-    if (node.text) {
-      return escapeHtml(node.text);
+    private serializeNode(node: OptimizedNode): string {
+        if (!node) {
+            return "";
+        }
+
+        if (node.text) {
+            return escapeHtml(node.text);
+        }
+
+        if (node.comment) {
+            return `<!-- ${escapeHtml(node.comment)} -->`;
+        }
+
+        if (!node.tag) {
+            return "";
+        }
+
+        return this.serializeDefaultNode(node);
     }
 
-    if (node.comment) {
-      return `<!-- ${escapeHtml(node.comment)} -->`;
+    private serializeDefaultNode(node: OptimizedNode): string {
+        const attrs: string[] = [];
+
+        this.appendAttributes(node, attrs);
+        this.appendStyleAttribute(node, attrs);
+
+        const attrStr = attrs.length > 0 ? " " + attrs.join(" ") : "";
+        const children = node.children?.map((child) => this.serializeNode(child)).join("") ?? "";
+
+        return this.voidTags.has(node.tag.toLowerCase())
+            ? `<${node.tag}${attrStr}>`
+            : `<${node.tag}${attrStr}>${children}</${node.tag}>`;
     }
 
-    if (!node.tag) {
-      return "";
+    private appendAttributes(node: OptimizedNode, attrs: string[]): void {
+        if (node.attributes) {
+            for (const [key, value] of Object.entries(node.attributes)) {
+                attrs.push(`${key}="${escapeHtml(String(value))}"`);
+            }
+        }
     }
 
-    return this.serializeDefaultNode(node);
-  }
+    private appendStyleAttribute(node: OptimizedNode, attrs: string[]): void {
+        const fullStyleString = Object.entries(node.styles)
+            .map(([key, value]) => `${key}: ${value}`)
+            .join("; ");
 
-  private serializeDefaultNode(node: OptimizedNode): string {
-    const attrs: string[] = [];
-
-    this.appendAttributes(node, attrs);
-    this.appendStyleAttribute(node, attrs);
-
-    const attrStr = attrs.length > 0 ? " " + attrs.join(" ") : "";
-    const children = node.children?.map((child) => this.serializeNode(child)).join("") ?? "";
-
-    return this.voidTags.has(node.tag.toLowerCase())
-      ? `<${node.tag}${attrStr}>`
-      : `<${node.tag}${attrStr}>${children}</${node.tag}>`;
-  }
-
-  private appendAttributes(node: OptimizedNode, attrs: string[]): void {
-    if (node.attributes) {
-      for (const [key, value] of Object.entries(node.attributes)) {
-        attrs.push(`${key}="${escapeHtml(String(value))}"`);
-      }
+        if (fullStyleString.length > 0) {
+            attrs.push(`style='${fullStyleString}'`);
+        }
     }
-  }
 
-  private appendStyleAttribute(node: OptimizedNode, attrs: string[]): void {
-    const fullStyleString = Object.entries(node.styles)
-      .map(([key, value]) => `${key}: ${value}`)
-      .join("; ");
+    private async format(html: string): Promise<string> {
+        const formatted = await prettier.format(html, {
+            parser: "html",
+            plugins: [parserHtml, parserCss],
+            tabWidth: 4,
+            printWidth: 120,
+            bracketSameLine: true,
+            htmlWhitespaceSensitivity: "ignore",
+        });
 
-    if (fullStyleString.length > 0) {
-      attrs.push(`style='${fullStyleString}'`);
+        return formatted.replace(/&quot;/g, "'").replace(/&#39;/g, "'");
     }
-  }
-
-  private async format(html: string): Promise<string> {
-    const formatted = await prettier.format(html, {
-      parser: "html",
-      plugins: [parserHtml, parserCss],
-      tabWidth: 4,
-      printWidth: 120,
-    });
-
-    return formatted.replace(/&quot;/g, "'").replace(/&#39;/g, "'");
-  }
 }

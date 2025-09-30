@@ -1,0 +1,87 @@
+.hljs {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+    border: 1px solid #646464;
+    display: block;
+    line-height: 1.5;
+    padding: 8px;
+}
+
+/* Keywords, control flow */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-tag {
+    color: #6eb5fb;
+    font-weight: 500;
+}
+
+/* Functions and methods */
+.hljs-title,
+.hljs-function .hljs-title,
+.hljs-method {
+    color: #82aaff;
+}
+
+/* Classes, types */
+.hljs-type,
+.hljs-class .hljs-title {
+    color: #ffcb6b;
+}
+
+/* Variables and properties */
+.hljs-variable,
+.hljs-attr,
+.hljs-property,
+.hljs-attribute {
+    color: #a5cdfd;
+}
+
+/* Strings, template literals */
+.hljs-string,
+.hljs-template-tag,
+.hljs-template-variable {
+    color: #ff865c;
+}
+
+/* Numbers, booleans */
+.hljs-number,
+.hljs-literal,
+.hljs-builtin-name {
+    color: #a5cdfd;
+}
+
+/* Comments */
+.hljs-comment,
+.hljs-quote {
+    color: #939393;
+    font-style: italic;
+}
+
+/* Regex, symbols */
+.hljs-regexp,
+.hljs-symbol {
+    color: #89ddff;
+}
+
+/* Operators and punctuation */
+.hljs-operator,
+.hljs-punctuation {
+    color: #e8eaed;
+}
+
+/* Meta info, annotations */
+.hljs-meta,
+.hljs-doctag {
+    color: #80cbc4;
+}
+
+/* Diff additions/deletions */
+.hljs-addition {
+    background-color: #003b00;
+    color: #c3e88d;
+}
+
+.hljs-deletion {
+    background-color: #3b0000;
+    color: #a5cdfd;
+}
