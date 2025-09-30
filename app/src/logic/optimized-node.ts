@@ -12,6 +12,7 @@ const DEVTOOLS_STYLES = [
     "max-inline-size",
     "-webkit-locale",
     "transform-origin",
+    "perspective-origin",
 ];
 
 const BASE_ATTRIBS = ["id", "class"];
@@ -52,7 +53,7 @@ export class OptimizedNode {
     }
 
     private getChildren(node: SerializedNode): OptimizedNode[] {
-        let children = node.children || [];
+        let children = (node.children || []).filter((x) => x.tag !== "style");
 
         if (!this.optionsForm.includeComments) {
             children = children.filter((x) => !x.comment);
