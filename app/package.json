@@ -1,25 +1,26 @@
 {
-  "name": "copy-html-with-styles",
-  "version": "1.0.0",
-  "license": "ISC",
-  "description": "A utility for copying HTML with styles",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@types/chrome": "^0.1.12",
-    "@types/node": "^24.5.2",
-    "terser": "^5.44.0",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vite-plugin-static-copy": "^3.1.2"
-  },
-  "dependencies": {
-    "highlight.js": "^11.11.1",
-    "html-escaper": "^3.0.3",
-    "prettier": "^3.6.2"
-  }
+    "name": "copy-html-with-styles",
+    "version": "1.0.0",
+    "license": "ISC",
+    "description": "A utility for copying HTML with styles",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build --mode production",
+        "build-dev": "vite build --mode development",
+        "preview": "vite preview",
+        "type-check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@types/chrome": "^0.1.12",
+        "@types/node": "^24.5.2",
+        "terser": "^5.44.0",
+        "typescript": "^5.9.2",
+        "vite": "^7.1.5",
+        "vite-plugin-static-copy": "^3.1.2"
+    },
+    "dependencies": {
+        "highlight.js": "^11.11.1",
+        "html-escaper": "^3.0.3",
+        "prettier": "^3.6.2"
+    }
 }
