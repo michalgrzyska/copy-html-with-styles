@@ -86,15 +86,19 @@ export class HtmlSerializer {
     }
 
     private async format(html: string): Promise<string> {
-        const formatted = await prettier.format(html, {
-            parser: "html",
-            plugins: [parserHtml, parserCss],
-            tabWidth: 4,
-            printWidth: 120,
-            bracketSameLine: true,
-            htmlWhitespaceSensitivity: "ignore",
-        });
+        try {
+            const formatted = await prettier.format(html, {
+                parser: "html",
+                plugins: [parserHtml, parserCss],
+                tabWidth: 4,
+                printWidth: 120,
+                bracketSameLine: true,
+                htmlWhitespaceSensitivity: "ignore",
+            });
 
-        return formatted.replace(/&quot;/g, "'").replace(/&#39;/g, "'");
+            return formatted.replace(/&quot;/g, "'").replace(/&#39;/g, "'");
+        } catch (err) {
+            return "There was an error formatting the selector. This is likely due to invalid or unclosed HTML tags.";
+        }
     }
 }
