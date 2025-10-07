@@ -1,78 +1,85 @@
 export class SerializedNode {
-  type!: number;
-  tag!: string;
-  attributes!: Record<string, any>;
-  inlineStyle!: string;
-  styles!: Record<string, string>;
-  children!: SerializedNode[];
-  text!: string;
-  comment!: string;
-  value!: any;
-  name!: string;
+    type!: number;
+    tag!: string;
+    attributes!: Record<string, any>;
+    inlineStyle!: string;
+    styles!: Record<string, string>;
+    children!: SerializedNode[];
+    text!: string;
+    comment!: string;
+    value!: any;
+    name!: string;
 
-  isChild: boolean;
+    isChild: boolean;
 
-  constructor(node: Element | ChildNode, isChild = false) {
-    this.isChild = isChild;
+    constructor(node: Element | ChildNode, isChild = false) {
+        this.isChild = isChild;
+        if (!node) return;
 
-    if (!node) {
-      return;
+        this.type = node.nodeType;
+
+        switch (node.nodeType) {
+            case Node.ELEMENT_NODE:
+                this.initAsElementNode(node as HTMLElement);
+                break;
+
+            case Node.TEXT_NODE:
+                this.text = node.nodeValue || "";
+                break;
+
+            case Node.COMMENT_NODE:
+                this.comment = node.nodeValue || "";
+                break;
+
+            default:
+                this.name = node.nodeName;
+                this.value = node.nodeValue;
+                this.children = this.collectChildren(node);
+                break;
+        }
     }
 
-    switch (node.nodeType) {
-      case Node.ELEMENT_NODE:
-        this.initAsElementNode(node as HTMLElement);
-        break;
+    private initAsElementNode(node: HTMLElement): void {
+        this.tag = node.tagName.toLowerCase();
+        this.inlineStyle = node.getAttribute("style") || "";
 
-      case Node.TEXT_NODE:
-        this.initAsTextNode(node);
-        break;
-
-      case Node.COMMENT_NODE:
-        this.initAsCommentNode(node);
-        break;
-
-      default:
-        this.initAsDefaultNode(node);
-        break;
+        this.attributes = this.collectAttributes(node);
+        this.styles = this.collectStyles(node);
+        this.children = this.collectChildren(node);
     }
-  }
 
-  private initAsElementNode(node: HTMLElement): void {
-    this.type = node.nodeType;
-    this.tag = node.tagName.toLowerCase();
-    this.inlineStyle = node.getAttribute("style") || "";
-    this.children = Array.from(node.childNodes).map((x) => new SerializedNode(x, true));
+    private collectAttributes(node: HTMLElement): Record<string, any> {
+        const attrs: Record<string, any> = {};
+        const attrList = node.attributes;
 
-    this.attributes = Array.from(node.attributes).reduce(
-      (acc, curr) => {
-        acc[curr.name] = curr.value;
-        return acc;
-      },
-      {} as Record<string, any>,
-    );
+        for (let i = 0; i < attrList.length; i++) {
+            const a = attrList[i];
+            attrs[a.name] = a.value;
+        }
 
-    const style = window.getComputedStyle(node);
+        return attrs;
+    }
 
-    this.styles = Object.fromEntries(
-      Array.from(style).map((prop) => [prop, style.getPropertyValue(prop)]),
-    );
-  }
+    private collectStyles(node: HTMLElement): Record<string, string> {
+        const style = window.getComputedStyle(node);
+        const styleObj: Record<string, string> = {};
 
-  private initAsTextNode(node: Element | ChildNode): void {
-    this.type = node.nodeType;
-    this.text = node.nodeValue!;
-  }
+        for (let i = 0; i < style.length; i++) {
+            const prop = style[i];
+            styleObj[prop] = style.getPropertyValue(prop);
+        }
 
-  private initAsCommentNode(node: Element | ChildNode): void {
-    this.type = node.nodeType;
-    this.comment = node.nodeValue!;
-  }
+        return styleObj;
+    }
 
-  private initAsDefaultNode(node: Element | ChildNode): void {
-    this.type = node.nodeType;
-    this.name = node.nodeName;
-    this.value = node.nodeValue;
-    this.children = Array.from(node.childNodes || []).map((x) => new SerializedNode(x));
-  }
+    private collectChildren(node: Element | ChildNode): SerializedNode[] {
+        const result: SerializedNode[] = [];
+        const kids = node.childNodes;
+
+        for (let i = 0; i < kids.length; i++) {
+            result.push(new SerializedNode(kids[i], true));
+        }
+
+        return result;
+    }
 }
