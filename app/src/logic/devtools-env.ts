@@ -1,4 +1,5 @@
 import { SerializedNode } from "./serialized-node.js";
+import browser from "webextension-polyfill";
 
 export class DevtoolsEnv {
     static getCurrentNode(): Promise<SerializedNode> {
@@ -14,17 +15,14 @@ export class DevtoolsEnv {
                 })()
             `;
 
-            chrome.devtools.inspectedWindow.eval(
-                expression,
-                (result: SerializedNode, exception) => {
-                    if (exception) {
-                        console.error("Eval exception:", exception);
-                        resolve(undefined!);
-                    } else {
-                        resolve(result);
-                    }
-                },
-            );
+            browser.devtools.inspectedWindow.eval(expression).then(([result, exception]) => {
+                if (exception) {
+                    console.error("Eval exception:", exception);
+                    resolve(undefined!);
+                } else {
+                    resolve(result as SerializedNode);
+                }
+            });
         });
     }
 }
