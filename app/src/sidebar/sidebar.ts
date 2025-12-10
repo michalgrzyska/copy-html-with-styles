@@ -6,6 +6,7 @@ import { HtmlSerializer } from "../logic/html-serializer.js";
 import { OptimizedNode } from "../logic/optimized-node.js";
 import { OptionsForm } from "../logic/options-form.js";
 import cssHref from "./theme.css?url";
+import browser from "webextension-polyfill";
 
 export class Sidebar {
     private readonly serializer = new HtmlSerializer();
@@ -56,7 +57,7 @@ export class Sidebar {
     }
 
     private addSelectionListener(): void {
-        chrome.devtools.panels.elements.onSelectionChanged.addListener(async () => {
+        browser.devtools.panels.elements.onSelectionChanged.addListener(async () => {
             await this.updateElementHtml();
         });
     }
