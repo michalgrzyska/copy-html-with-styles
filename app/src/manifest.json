@@ -1,7 +1,7 @@
 {
     "name": "Copy HTML with CSS",
     "description": "Adds a DevTools Elements sidebar that lets you copy the selected element's HTML along with its computed CSS as inline styles.",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "manifest_version": 3,
     "devtools_page": "index.html"
 }
