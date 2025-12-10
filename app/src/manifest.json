@@ -3,5 +3,14 @@
     "description": "Adds a DevTools Elements sidebar that lets you copy the selected element's HTML along with its computed CSS as inline styles.",
     "version": "1.0.2",
     "manifest_version": 3,
-    "devtools_page": "index.html"
+    "devtools_page": "index.html",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "{fd97e852-1b44-4bbd-970a-2cc6098b2526}",
+            "data_collection_permissions": {
+                "required": ["none"],
+                "description": "This extension does not collect any user data."
+            }
+        }
+    }
 }
