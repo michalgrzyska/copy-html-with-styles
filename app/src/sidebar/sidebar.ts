@@ -1,12 +1,11 @@
 import hljs from "highlight.js/lib/core";
 import xml from "highlight.js/lib/languages/xml";
-// import cssHref from "highlight.js/styles/vs2015.min.css?url";
+import browser from "webextension-polyfill";
 import { DevtoolsEnv } from "../logic/devtools-env.js";
 import { HtmlSerializer } from "../logic/html-serializer.js";
 import { OptimizedNode } from "../logic/optimized-node.js";
 import { OptionsForm } from "../logic/options-form.js";
 import cssHref from "./theme.css?url";
-import browser from "webextension-polyfill";
 
 export class Sidebar {
     private readonly serializer = new HtmlSerializer();

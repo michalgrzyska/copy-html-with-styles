@@ -20,6 +20,15 @@ html {
         div.top-nav {
             margin-bottom: 8px;
 
+            .select-all-toggle {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                margin-bottom: 12px;
+                font-weight: bold;
+                color: cornflowerblue;
+            }
+
             .options {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
