@@ -8,6 +8,7 @@ export class OptionsForm {
     includeId = false;
     includeComments = false;
     includeOthers = false;
+    excludeScriptTags = false;
 
     constructor(private readonly sidebar: Sidebar) {
         this.listenToCheckbox("includeColorStyles", (checked) => {
@@ -28,6 +29,10 @@ export class OptionsForm {
 
         this.listenToCheckbox("includeOthers", (checked) => {
             this.includeOthers = checked;
+        });
+
+        this.listenToCheckbox("excludeScriptTags", (checked) => {
+            this.excludeScriptTags = checked;
         });
 
         this.setupSelectAllCheckbox();
@@ -59,6 +64,7 @@ export class OptionsForm {
             this.includeId = target.checked;
             this.includeComments = target.checked;
             this.includeOthers = target.checked;
+            this.excludeScriptTags = target.checked;
 
             this.sidebar.updateElementHtml();
         });

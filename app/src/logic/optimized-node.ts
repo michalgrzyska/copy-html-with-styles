@@ -39,6 +39,19 @@ export class OptimizedNode {
 
         this.type = serializedNode.type;
         this.tag = serializedNode.tag;
+
+        if (this.optionsForm.excludeScriptTags && this.tag === "script") {
+            this.tag = "";
+            this.styles = {};
+            this.text = "";
+            this.comment = "";
+            this.value = serializedNode.value;
+            this.name = serializedNode.name;
+            this.attributes = {};
+            this.children = [];
+            return;
+        }
+
         this.styles = this.getOptimizedStyles(serializedNode);
         this.text = serializedNode.text;
         this.comment = serializedNode.comment;
@@ -54,6 +67,10 @@ export class OptimizedNode {
 
     private getChildren(node: SerializedNode): OptimizedNode[] {
         let children = (node.children || []).filter((x) => x.tag !== "style");
+
+        if (this.optionsForm.excludeScriptTags) {
+            children = children.filter((x) => x.tag !== "script");
+        }
 
         if (!this.optionsForm.includeComments) {
             children = children.filter((x) => !x.comment);
